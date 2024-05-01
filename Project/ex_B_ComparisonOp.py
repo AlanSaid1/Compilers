@@ -1,7 +1,6 @@
 from delta import Compiler, Phase
 
-
-source = '#x0FF1ce'
+source = '1 <= 2 == 1 != 0 > 0 < 0 <= 1'
 
 c = Compiler('program')
 c.realize(source, Phase.EVALUATION)

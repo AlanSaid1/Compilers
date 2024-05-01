@@ -9,7 +9,8 @@ if = 'if' expression block ( 'else' block )?
 while = 'while' expression block
 block = '{' statement* '}'
 lhs_variable = identifier
-expression = additive ('&&' additive)*
+expression = comparison_expr ('&&' comparison_expr)*
+comparison_expr = additive (('==' / '!=' / '>=' / '>' / '<=' / '<') additive)*
 additive = multiplicative (('+' / '-') multiplicative)*
 multiplicative = unary (('*' / '/' / '%') unary)*
 unary = ('+' / '-' / '!')* primary
