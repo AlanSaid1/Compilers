@@ -10,7 +10,8 @@ do = 'do' block 'while' expression ';'
 while = 'while' expression block
 block = '{' statement* '}'
 lhs_variable = identifier
-expression = comparison_expr ('&&' comparison_expr)*
+expression = or_expr ('&&' or_expr)*
+or_expr = comparison_expr ('||' comparison_expr)*
 comparison_expr = additive (('==' / '!=' / '>=' / '>' / '<=' / '<') additive)*
 additive = multiplicative (('+' / '-') multiplicative)*
 multiplicative = unary (('*' / '/' / '%') unary)*
