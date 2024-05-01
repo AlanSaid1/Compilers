@@ -8,9 +8,9 @@ class SemanticMistake(Exception):
 
 
 class SemanticVisitor(PTNodeVisitor):
-
+    # agregamos do como palabra reservada
     RESERVED_WORDS = ['true', 'false', 'var',
-                      'if', 'else', 'while']
+                      'if', 'else', 'while', 'do']
 
     def __init__(self, parser, **kwargs):
         super().__init__(**kwargs)
