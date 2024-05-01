@@ -39,11 +39,42 @@ class CodeGenerationVisitor(PTNodeVisitor):
         result = (children[0]
                   + '    if\n'
                   + children[1])
+        if len(children) == 2:
+            result += '    end\n'
+            return result
         if len(children) == 3:
             result += ('    else\n'
                        + children[2])
-        result += '    end\n'
-        return result
+            result += '    end\n'
+            return result
+        
+        if (len(children) % 2) != 0:
+            a = 0
+            result += '    else\n'
+            for i in range(2, len(children) - 1, 2):
+                a += 1
+                result += (children[i]
+                    + '    if\n'
+                    + children[i+1]
+                    +'    else\n')
+            
+            result += children[-1]
+            for _ in range(a + 1):
+                result += '    end\n'
+            return result
+        else:
+            a = 0
+            result += '    else\n'
+            for i in range(2, len(children), 2):
+                a += 1
+                result += (children[i]
+                    + '    if\n'
+                    + children[i+1]
+                    +'    else\n')
+            result = result[:-9]
+            for _ in range(a + 1):
+                result += '    end\n'
+            return result
 
     def visit_while(self, node, children):
         return (
@@ -77,6 +108,10 @@ class CodeGenerationVisitor(PTNodeVisitor):
                       '    end\n' * (len(children) - 1))
         return ''.join(result)
     
+    '''
+    esta funcion se encarga de generar el codigo para las comparaciones de los operadores
+    ==, !=, >=, >, <=, <, ¿
+    '''
     def visit_comparison_expr(self, node, children):
         result = [children[0]]
         for i in range(1, len(children), 2):
