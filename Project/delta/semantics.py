@@ -24,14 +24,6 @@ class SemanticVisitor(PTNodeVisitor):
     def symbol_table(self):
         return self.__symbol_table
 
-    def visit_decimal(self, node, children):
-        value = int(node.value)
-        if value >= 2 ** 31:
-            raise SemanticMistake(
-                'Out of range decimal integer literal at position '
-                f'{self.position(node)} => { value }'
-            )
-
     def visit_decl_variable(self, node, children):
         name = node.value
         if name in SemanticVisitor.RESERVED_WORDS:
@@ -61,3 +53,31 @@ class SemanticVisitor(PTNodeVisitor):
                 'Undeclared variable reference at position '
                 f'{self.position(node)} => {name}'
             )
+        
+    '''
+    Hace que al momento de encontrarse con alguno de estos nodos, se haga la correcta conversión de los valores
+    '''
+    def visit_integer(self, node, children):
+        #binary
+        if node.value.startswith('#b'):
+            value = int(node.value[2:], 2)
+        # octal
+        elif node.value.startswith('#o'):
+            value = int(node.value[2:], 8)
+        # exadecimal
+        elif node.value.startswith('#x'):
+            value = int(node.value[2:], 16)
+        # Al igual que si solo se encuentra sin estos prefijos
+        else:
+            value = int(node.value)
+        if value < 0:
+            raise SemanticMistake(
+                'Negative integer at position '
+                f'{self.position(node)} => {value}'
+            )
+        if value > 0xFFFFFFFF:
+            raise SemanticMistake(
+                'Integer out of range at position '
+                f'{self.position(node)} => {value}'
+            )
+

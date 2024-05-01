@@ -101,8 +101,17 @@ class CodeGenerationVisitor(PTNodeVisitor):
                     result.append('    i32.rem_s\n')
         return ''.join(result)
 
-    def visit_decimal(self, node, children):
-        return f'    i32.const { node.value }\n'
+    def visit_integer(self, node, children):
+        if node.value.startswith('#b'):
+            value = int(node.value[2:], 2)
+        elif node.value.startswith('#o'):
+            value = int(node.value[2:], 8)
+        elif node.value.startswith('#x'):
+            value = int(node.value[2:], 16)
+        else:
+            value = int(node.value)
+
+        return f'    i32.const {value}\n'
 
     def visit_boolean(self, node, children):
         if children[0] == 'true':
@@ -132,3 +141,6 @@ class CodeGenerationVisitor(PTNodeVisitor):
     def visit_rhs_variable(self, node, children):
         name = node.value
         return f'    local.get ${name}\n'
+    
+    def visit_primary(self, node, children):
+        return children[0]
